@@ -1,0 +1,59 @@
+@startuml
+
+interface LifecycleOwner{
++ Lifecycle getLifecycle();
+}
+
+abstract class Lifecycle {
++ {abstract} void addObserver(LifecycleObserver observer)
++ {abstract} void removeObserver(LifecycleObserver observer)
++ {abstract} State getCurrentState()
+}
+
+class LifecycleRegistry extends Lifecycle{
++ void handleLifecycleEvent(Lifecycle.Event event)
+}
+
+enum Event {
+    ON_CREATE,
+    ON_START,
+    ON_RESUME,
+    ON_PAUSE,
+    ON_STOP,
+    ON_DESTROY,
+    ON_ANY
+}
+
+enum State {
+    DESTROYED,
+    INITIALIZED,
+    CREATED,
+    STARTED,
+    RESUMED;
+}
+
+interface LifecycleObserver
+
+interface GenericLifecycleObserver extends LifecycleObserver {
++ void onStateChanged(LifecycleOwner source, Lifecycle.Event event);
+}
+
+class ReflectiveGenericLifecycleObserver implements GenericLifecycleObserver {
+- Object mWrapped;
+- CallbackInfo mInfo;
+}
+
+'LifecycleOwner 依赖 Lifecycle
+LifecycleOwner ..> Lifecycle
+
+class Activity implements LifecycleOwner
+class Fragment implements LifecycleOwner
+
+Lifecycle --- Event
+Lifecycle --- State
+
+class CallbackInfo
+
+class MethodReference
+@enduml
+

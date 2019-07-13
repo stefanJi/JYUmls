@@ -1,0 +1,32 @@
+@startuml
+
+abstract class InterruptibleProcess
+class PracticeProcess extends InterruptibleProcess{
+- practice: IPractice
+}
+
+interface IPractice {
+    injectEventPool(eventPool: IEventPool)
+    dispatchTo(activity: Activity, finishActivityEventId: String, dispatchingActivityIndex: Int, activitySize: Int)
+    onNoMoreActivityToDispatch()
+    onForwardActivity(remainingActivityCount: Int, activityType: ActivityType.Enum)
+    onBackwardActivity(activityType: ActivityType.Enum)
+    handleUserAnswerEvent(event: UserAnswerEvent)
+    onProcessStart()
+    onProcessStop()
+}
+
+abstract class PracticeWrapper{
+- inner: IPractice
+}
+
+IPractice <|.. PracticeWrapper
+
+class SegmentCommon extends PracticeWrapper
+class SegmentWithGuide extends PracticeWrapper
+class SegmentWithProgress extends PracticeWrapper
+class QuizPractice extends PracticeWrapper
+
+IPractice o-- PracticeProcess
+
+@enduml

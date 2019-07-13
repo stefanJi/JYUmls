@@ -1,0 +1,18 @@
+@startuml
+
+abstract class InterruptibleProcess
+abstract class PracticeProcess extends InterruptibleProcess
+abstract class SegmentCommonPracticeProcess extends PracticeProcess
+
+abstract class QuizPracticeProcess extends SegmentCommonPracticeProcess
+class PostQuizPracticeProcess extends QuizPracticeProcess
+class PreQuizPracticeProcess extends QuizPracticeProcess
+class StageQuizPracticeProcess extends QuizPracticeProcess
+
+abstract class SegmentPracticeWithGuideProcess extends SegmentCommonPracticeProcess
+abstract class SegmentPracticeWithProgressProcess extends SegmentPracticeWithGuideProcess
+class EducationPracticeProcess extends SegmentPracticeWithProgressProcess
+class ExercisePracticeProcess extends SegmentPracticeWithProgressProcess
+
+
+@enduml

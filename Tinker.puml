@@ -1,0 +1,53 @@
+@startuml
+autonumber
+
+participant Application #lightgreen
+participant OkTinkerHelper #lightgreen
+participant OkTinker #lightgreen
+participant TinkerServerClient #lightgreen
+participant TinkerApi #lightgreen
+participant TinkerInstaller #lightgreen
+
+Application -> Application :onCreate
+Application -> OkTinkerHelper :fetchPatch
+OkTinkerHelper -> OkTinker: fetchUpdate
+OkTinker -> TinkerServerClient: fetchPatch
+TinkerServerClient -> TinkerApi: queryPatchInfo
+TinkerApi --> TinkerServerClient: onResponse
+TinkerServerClient -> TinkerServerClient :applyPatch
+TinkerServerClient -> TinkerInstaller: onReceiveUpgradePatch
+TinkerInstaller -> PatchListener:onPatchReceived
+PatchListener -> TinkerPatchService:runPatchService
+
+alt ApiLevel < 26
+    TinkerPatchService -> TinkerPatchService:runPatchServiceByIntentService
+else ApiLevel >= 26
+    TinkerPatchService -> TinkerPatchService:runPatchServiceByJobScheduler
+end
+
+TinkerPatchService -> TinkerPatchService :doApplyPatch
+
+TinkerPatchService -> UpgradePatch :tryPatch
+activate UpgradePatch
+
+UpgradePatch -> ShareTinkerInternals :checkTinkerPackage
+
+ShareTinkerInternals -> ShareSecurityCheck :verifyPatchMetaSignature
+note right : 解析 Apk 文件中的 meta.txt
+
+ShareSecurityCheck --> ShareTinkerInternals
+ShareTinkerInternals -> ShareSecurityCheck:
+ShareTinkerInternals --> UpgradePatch :returnCode
+
+alt dex
+    UpgradePatch -> DexDiffPatchInternal :tryRecoverDexFiles
+else lib
+    UpgradePatch -> BsDiffPatchInternal :tryRecoverLibraryFiles
+else resource
+    UpgradePatch -> ResDiffPatchInternal :tryRecoverResourceFiles
+end
+
+
+UpgradePatch --> TinkerPatchService :result
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+
+actor User
+control BellLessonLifecycle
+control Android
+control Downstream
+
+User -> BellLessonLifecycle: pause
+note left: 用户点击暂停
+
+BellLessonLifecycle -> BellLessonLifecycle: onPause
+BellLessonLifecycle -> Downstream: dispatch PauseEvent
+note left: 分发 Pause 事件到下游
+
+Android -> BellLessonLifecycle: pause
+note right: App 退后台
+
+BellLessonLifecycle -> BellLessonLifecycle: onPause
+
+Android -> BellLessonLifecycle: resume
+note right: App 回到前台
+BellLessonLifecycle -> BellLessonLifecycle: onResume
+
+User -> BellLessonLifecycle: resume
+note left: 用户点击继续
+
+BellLessonLifecycle -> BellLessonLifecycle: onResume
+BellLessonLifecycle -> Downstream: dispatch ResumeEvent
+note left: 分发 Resume 事件到下游
+@enduml

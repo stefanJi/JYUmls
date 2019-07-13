@@ -1,0 +1,24 @@
+@startuml
+
+interface Component{
++ operation()
+}
+
+class ConcreteComponent{
++ operation()
+}
+
+abstract class Decoration{
+ - Component component
+}
+
+Component <|.. ConcreteComponent
+Component <|.. Decoration
+
+Decoration o-- Component
+
+class ConcreteDecoration extends Decoration {
++ operation()
+}
+
+@enduml

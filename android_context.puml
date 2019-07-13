@@ -1,0 +1,24 @@
+@startuml
+
+abstract class Context
+
+class ContextImpl extends Context
+
+class ContextWrapper extends Context{
++ Context mBase;
+}
+
+class ContextThemeWrapper extends ContextWrapper{
+}
+
+ContextImpl -o ContextWrapper
+
+class Application extends ContextWrapper
+
+class Service extends ContextWrapper
+
+class Activity extends ContextThemeWrapper
+
+
+
+@enduml

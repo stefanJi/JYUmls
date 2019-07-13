@@ -1,0 +1,49 @@
+@startuml
+
+participant client.interceptors #SpringGreen
+participant RetryAndFollowUpInterceptor
+participant BridgeInterceptor
+participant CacheInterceptor
+participant ConnectInterceptor
+participant client.networkInterceptors #SpringGreen
+participant CallServerInterceptor
+
+client.interceptors -> RetryAndFollowUpInterceptor
+activate client.interceptors
+activate RetryAndFollowUpInterceptor
+
+RetryAndFollowUpInterceptor -> BridgeInterceptor
+activate BridgeInterceptor
+
+BridgeInterceptor -> CacheInterceptor
+activate CacheInterceptor
+
+CacheInterceptor -> ConnectInterceptor
+activate ConnectInterceptor
+
+ConnectInterceptor -> client.networkInterceptors
+activate client.networkInterceptors
+
+client.networkInterceptors -> CallServerInterceptor
+activate CallServerInterceptor
+
+CallServerInterceptor --> client.networkInterceptors
+deactivate CallServerInterceptor
+
+client.networkInterceptors --> ConnectInterceptor
+deactivate client.networkInterceptors
+
+ConnectInterceptor --> CacheInterceptor
+deactivate ConnectInterceptor
+
+CacheInterceptor --> BridgeInterceptor
+deactivate CacheInterceptor
+
+BridgeInterceptor --> RetryAndFollowUpInterceptor
+deactivate BridgeInterceptor
+
+RetryAndFollowUpInterceptor --> client.interceptors
+deactivate RetryAndFollowUpInterceptor
+deactivate client.interceptors
+
+@enduml
