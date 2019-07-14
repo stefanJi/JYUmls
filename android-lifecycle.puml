@@ -46,14 +46,21 @@ class ReflectiveGenericLifecycleObserver implements GenericLifecycleObserver {
 'LifecycleOwner 依赖 Lifecycle
 LifecycleOwner ..> Lifecycle
 
-class Activity implements LifecycleOwner
-class Fragment implements LifecycleOwner
+class SupportActivity implements LifecycleOwner{
+- LifecycleRegistry mLifecycleRegistry
+}
 
-Lifecycle --- Event
-Lifecycle --- State
+Lifecycle ..o LifecycleObserver
 
-class CallbackInfo
+class ReportFragment{
+- void dispatch(Lifecycle.Event event)
+}
 
-class MethodReference
+SupportActivity ..> ReportFragment
+SupportActivity ..> LifecycleRegistry
+ReportFragment ..> LifecycleRegistry
+ReportFragment --o Event
+LifecycleRegistry ..> Event
+LifecycleRegistry --o State
+
 @enduml
-
