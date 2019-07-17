@@ -1,5 +1,8 @@
 @startuml
 
+skinparam backgroundColor #EEEBDC
+skinparam roundcorner 20
+
 interface LifecycleOwner{
 + Lifecycle getLifecycle();
 }

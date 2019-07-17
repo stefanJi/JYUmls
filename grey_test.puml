@@ -1,0 +1,15 @@
+@startuml
+actor Developer
+participant BackEnd as BE
+participant Client
+
+Developer -> BE: 上传灰度安装包
+Client -> BE: 请求是否有灰度包
+note left of Client: 如果是公司员工
+BE --> Client: 返回新的灰度包下载地址和相关信息
+Client -> Client: 下载安装包
+Client -> Client: 提示安装
+
+note left of BE: 当一个灰度周期结束
+Developer -> BE: 停止灰度
+@enduml
