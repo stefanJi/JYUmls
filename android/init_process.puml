@@ -1,0 +1,25 @@
+@startuml
+
+activate init
+init -> init: main
+init -> init: InitKernelLogging
+init -> init: property_init
+init -> init: signal_handler_init
+init -> Parser: ParseConfig('/init.rc')
+
+loop next_token!=T_EOF
+    Parser -> ServiceParser: ParseSection
+    ServiceParser -> ServiceParser: make_unique<Service>
+    note right: 创建一个 Service 对象 service_ ，\n存储 rc 文件中的 Service 配置
+    Parser -> ServiceParser: ParseLineSection
+    ServiceParser -> Service: ParseLine
+    note right: 为 service_ 的各个属性赋值
+end
+
+ServiceParser -> ServiceParser: EndSection
+ServiceParser -> ServiceManager: AddService(service_)
+note right: 将 service_ 添加到\n ServiceManager 的 services_ 数组中
+
+deactivate init
+
+@enduml

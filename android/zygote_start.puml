@@ -1,0 +1,24 @@
+@startuml
+Service -> Service: Start
+Service -> Service: fork
+note right: fork 进程，接下来的操作在子进程中
+Service -> Service: ExpandArgsAndExecve
+note right: 调用 execve 执行 zygote service 的程序\n system/bin/app_process64\n其对应源码为app_main.cpp
+Service -> app_main.cpp: main
+app_main.cpp -> AndroidRuntime: start("com.android.internal.os.ZygoteInit")
+AndroidRuntime -> AndroidRuntime: startVM
+note right: 启动 JVM
+AndroidRuntime -> JNIEnv: CallStaticVoidMethod
+note right: 调用 ZygoteInit 类的静态方法: main
+JNIEnv -> ZygoteInit: main
+ZygoteInit -> ZygoteServer: registerServerSocket
+ZygoteInit -> ZygoteInit: preload
+group system_server
+    ZygoteInit -> Zygote: forkSystemServer
+    Zygote -> Zygote: nativeForkSystemServer
+    Zygote --> ZygoteInit: pid
+    ZygoteInit -> ZygoteServer: closeServerSocket
+end
+ZygoteInit -> ZygoteServer: runSelectLoop
+ZygoteInit -> ZygoteServer: closeServerSocket
+@enduml
