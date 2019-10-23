@@ -1,0 +1,32 @@
+@startuml
+footer ValueAnimator 动画原理执行
+ValueAnimator -> ValueAnimator: start
+activate ValueAnimator
+ValueAnimator -> ValueAnimator: addAnimationCallback
+ValueAnimator -> AnimationHandler: addAnimationFrameCallback
+activate AnimationHandler
+AnimationHandler -> MyFrameCallbackProvider: postFrameCallback
+MyFrameCallbackProvider -> Choreographer: postFrameCallback
+note right: callbackType: CALLBACK_ANIMATION
+activate Choreographer
+Choreographer -> FrameHandler: sendMessage
+deactivate Choreographer
+deactivate AnimationHandler
+ValueAnimator -> ValueAnimator: startAnimation
+ValueAnimator -> ValueAnimator: initAnimation
+ValueAnimator -> PropertyValuesHolder: init
+ValueAnimator -> ValueAnimator: notifyStartListeners
+deactivate ValueAnimator
+
+activate Choreographer
+Choreographer -> FrameCallback: doFrame
+note left: 当新的 Vsync 信号发出
+FrameCallback -> AnimationHandler: doAnimationFrame
+AnimationHandler -> ValueAnimator: doAnimationFrame
+ValueAnimator -> ValueAnimator: animateBasedOnTime
+ValueAnimator -> ValueAnimator: getCurrentIterationFraction
+ValueAnimator -> ValueAnimator: animateValue
+ValueAnimator -> PropertyValuesHolder: calculateValue
+note right: 计算新的动画值
+ValueAnimator -> ValueAnimator: mUpdateListeners.onAnimationUpdate
+@enduml

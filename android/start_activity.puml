@@ -1,0 +1,15 @@
+@startuml
+Activity -> Activity: startActivityForResult
+Activity -> Instrumentation:execStartActivity
+Instrumentation -> ActivityManager: startActivity
+ActivityManager -> ActivityThread: getInstrumentation
+ActivityThread --> ActivityManager: Instrumentation
+ActivityManager -> Instrumentation: execStartActivityFromAppTask
+Instrumentation -> AppTaskImpl: startActivity
+AppTaskImpl -> ActivityManagerService: getActivityStartController
+ActivityManagerService --> AppTaskImpl: ActivityStartController
+AppTaskImpl -> ActivityStartController: obtainStarter
+ActivityStartController --> AppTaskImpl: ActivityStarter
+AppTaskImpl -> ActivityStarter: execute
+
+@enduml
