@@ -1,0 +1,23 @@
+@startuml
+footer: Flutter Init
+activate FlutterActivity
+FlutterActivity -> FlutterActivity: onCreate
+FlutterActivity -> FlutterView: new
+FlutterView -> FlutterNativeView: new
+FlutterNativeView -> FlutterNativeView: attach
+FlutterNativeView -> FlutterJNI: attachToNative
+FlutterJNI -> AndroidShellHolder: new
+
+activate Shell
+AndroidShellHolder -> Shell: Create
+Shell -> DartVMRef: Create
+DartVMRef --> Shell: dartVM
+Shell -> Shell: CreateShellOnPlatformThread
+Shell -> Engine: new
+Engine -> RuntimeController: new
+RuntimeController -> DartIsolate: CreateRootIsolate
+Shell --> AndroidShellHolder: shell
+deactivate Shell
+
+deactivate FlutterActivity
+@enduml
