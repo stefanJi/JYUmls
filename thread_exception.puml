@@ -1,0 +1,20 @@
+@startuml
+start
+:JVM Thread#dispatchUncaughtException;
+:getUncaughtExceptionHandler;
+if (uncaughtExceptionHandler != null) then (Y)
+    :uncaughtExceptionHandler.uncaughtException;
+else(N)
+    :ThreadGroup#uncaughtException;
+    while (parent != null)
+        :parent.uncaughtException;
+    endwhile
+    if(Thread.defaultUncaughtExceptionHandler != null) then(Y)
+        :defaultUncaughtExceptionHandler.uncaughtException;
+    else(N)
+        :System.err.print("Exception in thread");
+        :e.printStackTrace;
+    endif
+endif
+stop
+@enduml

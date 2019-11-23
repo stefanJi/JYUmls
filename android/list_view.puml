@@ -1,0 +1,30 @@
+@startuml
+ListView -> ListView: onLayout
+ListView -> ListView: layoutChildren
+ListView -> ListView: fillFromTop
+ListView -> ListView: fillDown
+loop nextTop < end && pos < mItemCount
+    ListView -> ListView: makeAndAddView
+    activate ListView
+    alt !mDataChanges(adapter 中数据没改变)
+       ListView -> RecycleBin: getActiveView
+       note right: 从屏幕中缓存 activeViews  中取 pos 对应的 ItemView
+       RecycleBin --> ListView: activeView
+       alt activeView != null
+          ListView -> ListView: setupChild
+          return activeView
+       end
+    else
+       ListView -> ListView: obtainView
+       ListView -> RecycleBin: getScrapView
+       note right: 从离屏缓存 mScrapViews 中获取
+       RecycleBin --> ListView: scrapView
+       ListView -> Adapter: getView(pos, scrapView)
+       note right: 即使这里 scrapView 命中了缓存, 也会重走一遍 bindView 的过程\n这也是大家通过 setTag 复用 ListView 的 holder 的原因
+       Adapter --> ListView: child
+       ListView -> RecycleBin: addScrapView(child)
+       ListView -> ListView: setupChild
+    end
+
+end
+@enduml

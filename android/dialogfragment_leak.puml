@@ -1,0 +1,19 @@
+@startuml
+autonumber
+DialogFragment -> DialogFragment: onActivityCreated
+DialogFragment -> Dialog: setOnDismissListener
+Dialog -> ListenerHandler: obtainMessage
+ListenerHandler -> Message: obtain
+Message --> ListenerHandler: message
+ListenerHandler --> Dialog: mDismissMessage
+
+autonumber 1
+DialogFragment -> Dialog: dismiss
+Dialog -> Dialog: sendDismissMessage
+Dialog -> Message: obtain(mDismissMessage)
+Message --> Dialog: tempMessage
+Dialog -> Message: sendToTarget
+Message -> ListenerHandler: sendMessage
+ListenerHandler -> MessageQueue: enqueueMessage
+
+@enduml
