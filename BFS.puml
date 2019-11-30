@@ -1,0 +1,14 @@
+@startuml
+start
+:队列初始化(A);
+:开始查找;
+while (如果队列不为空) is (Y)
+    :弹出队列第一个元素x(A);
+    if(满足条件?(x==G?)) then (Y)
+        :退出遍历;
+    else(N)
+        :将当前元素(A)的下一层元素(B,G,C)添加到队列尾部;
+    endif
+endwhile(N)
+stop
+@enduml
