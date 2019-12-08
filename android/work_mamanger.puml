@@ -1,0 +1,44 @@
+@startuml
+:WorkManagerImpl#enqueue;
+:EnqueueRunnable#run;
+
+partition WorkTaskExecutor {
+
+    partition DB {
+        :workSpecDao#insertWorkSpec;
+        :workTagDao#insert;
+        :workNameDao#insert;
+    }
+
+    partition Scheduler {
+        :scheduleWorkInBackground;
+    }
+}
+@enduml
+
+@startuml
+abstract class WorkRequest {
+- UUID mId;
+- WorkSpec mWorkSpec;
+- Set<String> mTags;
+}
+
+WorkRequest <|-- OneTimeWorkRequest
+WorkRequest <|-- PeriodicWorkRequest
+@enduml
+
+@startuml
+:WorkDatabase#create;
+:createSchedulers;
+if (Api Level >= 23?) then (yes)
+    :SystemJobScheduler;
+else (no)
+    :schedulers = tryCreateGcmBasedScheduler;
+    if(schedulers==null) then (yes)
+        :SystemAlarmScheduler;
+    else (no)
+    endif
+endif
+:new Processor;
+:internalInit;
+@enduml
