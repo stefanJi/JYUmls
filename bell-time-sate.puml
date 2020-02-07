@@ -1,0 +1,19 @@
+@startuml
+
+actor User
+control Bell
+control Event
+control DB
+control Backend
+
+User -> Bell: start
+Bell -> Event: START
+Event -> DB: save
+note left: 记录 START event
+User -> Bell: stop
+Bell -> Event: STOP
+Event -> DB: save
+note left: 记录 STOP event
+DB -> Backend: upload
+note left: 上传 events
+@enduml

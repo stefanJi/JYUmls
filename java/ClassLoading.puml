@@ -1,0 +1,40 @@
+@startuml
+start
+partition 触发类的加载 {
+fork
+    :实例化对象时;
+fork again
+    :读取或设置类的静态字段(类变量);
+fork again
+    :访问类的静态方法;
+fork again
+    :通过反射访问;
+fork again
+    :如果父类未初始化, \n先触发父类的初始化;
+fork again
+    :虚拟机启动时, \n会加载指定的主类;
+endfork
+}
+partition 加载 {
+:类加载器将字节码流加载到内存;
+}
+partition 验证 {
+:文件格式验证;
+:元数据验证;
+:方法代码验证;
+:符号引用验证;
+}
+partition 准备 {
+:**类变量**分配内存;
+:**类变量**赋零值;
+:**类常量**赋初始值;
+}
+partition 解析 {
+:符号引用替换为直接引用;
+}
+partition 初始化(执行<clinit>方法) {
+:执行静态代码块;
+:**类变量**赋初始值;
+}
+end
+@enduml
